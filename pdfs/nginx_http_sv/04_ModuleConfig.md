@@ -379,3 +379,36 @@ comment: plaint text comment for own use
 
 - allow and deny directives
 - let allow or deny access to a resource for a specific IP address or IP address range.
+- ```allow/deny IP | CIDR | unix: | all```
+- unix represent domain sockets
+
+```yaml
+location {
+  allow 127.0.0.1;
+  allow unix;
+  deny all; #deny all other ip addresses
+}
+```
+
+### Limit Connections 
+
+Allows to define maximun number of simultaneous connections to the server for a specific zone.
+
+- limit_conn_zone $variable zone=name:size;
+- $variable is the mechanism to differentiate one client from another. Typically $binary_remote_Addr
+- name is an aribtrary name given to the zone
+- size: max size to the table storing session states
+
+```yaml
+# Examples
+limit_conn_zone $binary_remote_addr zone=myzone:10m;
+limit_conn zone_name connection_limit;
+```
+
+### Limit request
+
+allows to limit the number of requests for a defined zone. 
+
+```yaml
+limit_req_zone $variable zone=name:max_memory_size rate=rate;
+```
