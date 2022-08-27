@@ -116,4 +116,266 @@ when a variable that has not yet been initalized nginx will issue log messages i
 
 if set to on, nginx will issue log messags for every operation performed by the rewrite engine at the notice error level. 
 
-### Common rewrite rules 
+### Common rewrite rules
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------
+
+## SSI commands
+
+The principle is simple. Disgn regular HTML pages and insert inside SSI commands that looks like regular HTML comments 
+
+```html
+<!--# command param1="value" param2="value2 -->
+<!--# include file="header.html" -->
+```
+
+This command generates an HTTP sub-request to be processed by Nginx. The body of the response is inserted instead the command itself.
+
+```html
+<!--# include virtual="/sources/header.php?id=123" -->
+```
+
+This sends a sub-request to the server. The directive wait="yes" is using to specify that Nginx should wait for the completion of the request before moving on to other includes.
+
+If the result of the include is empty Nginx inserts 404 or 500 error page.
+
+### Variables
+
+Nginx SSI module offers the option of working with variables. Displaying a variable can be done with echo command 
+
+```html
+<!-- var="variable_name" -->
+```
+
+- var: Name of the variable to display.
+- default: A string to be displayed in case the var is empty
+- encoding: encoding method for the string
+
+the command set, insthead of echo, write the variable value
+
+```html
+<!--# echo var="MYVAR"  --> (none)
+<!--# set var=MYNAME" value="Gian" -->
+<!--# set var="MYVAR" value="hello $MYNAME" -->
+<!--# echo var="MYVAR"  --> (hello Gian) 
+```
+
+```html
+<!-- if expr="expression1" -->
+...
+<!-- elif expr="expression2" -->
+...
+<!-- else -->
+...
+<!-- endif -->
+```
+
+```html
+<!--# if expr="variable = some_value" -->
+<!--# if expr="variable = /pattern/" -->
+```
+
+-------------------
+
+## Access and Logging Module
+
+Allows to config the way visitors access your website and the way your server logs requests.
+
+### index
+
+- http, server, location
+
+```yaml
+index index.php index.html index.htm
+```
+
+#### Log
+
+Controls the behavior of Nginx regarding the access logs. It is a key module for system administrators, allows to analyzing the runtime behavior of web apps.
+
+##### access_log
+
+- http, server, location, if, limit_except
+- defines
+  - acess log file path
+  - format of entries in the access log
+- ```acess_log path [format [buffer=size] | off```
+- off to disable access loging at the current level
+- format argument corresponds to a tepmlate declared with log_format directive
+
+#### log_format
+
+- http, server, location
+- template to be utilized by access_log directive
+- ```log_format template_name format_string;```
+- default template is called **combined** 
+- default: ```log_format combined '$remote_addr - $remote_user [$time_local] '"$request: $status $body_bytes_sent '"$http_referer" "$http_user_agent"';```
+- ```log_format simple '$remote_addr $request```
+  
+  #### open_log_file_cache
+
+  - http, server, location
+  - configure cache for log file descriptors
+  
+  ### Log Module Variables
+
+  - connection
+  - pipe
+  - time_local
+  - msec
+  - request_time
+  - status
+  - bytes_sent
+  - body_bytes_sent
+  - apache_bytes_sent
+  - request_length
+
+---------------
+
+## Limits and Restrictions 
+
+Regulates access to the coduments of your websites. Restricts the access and require users to:
+- authenticate
+- match a set of rules
+
+### Auth_basic module
+
+enables basic authentication funcitonality. Username and password
+
+```yaml
+location /admin/ {
+  auth_basic "Admin control panel"; #Variables supported
+  auth_basic_user_file access/password_file
+}
+
+auth_basic can be set to either off or a text message, referred to as authentication challenge or realm. Is displayed by browsers in a username/password box when client attemps to access.
+
+auth_basic_user_file defines the path of the password file relative to the directory of the configuration file.
+
+```txt
+password file syntax"
+username:[{SCHEME}]password[:comment].
+
+username: plain text user name
+SCHEME: optionally. PAssword hashing method
+  - PLAIN
+  - SHA (SHA-1 Hashing)
+  - SSHA SaltedSHA-1 hashing
+password: password
+comment: plaint text comment for own use 
+```
+
+### Access Module
+
+- allow and deny directives
+- let allow or deny access to a resource for a specific IP address or IP address range.
