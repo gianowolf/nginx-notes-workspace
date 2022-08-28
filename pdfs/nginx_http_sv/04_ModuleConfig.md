@@ -405,10 +405,306 @@ limit_conn_zone $binary_remote_addr zone=myzone:10m;
 limit_conn zone_name connection_limit;
 ```
 
+```yaml
+location /downloads/ {
+  limit_conn myzone 1;
+}
+```
+
 ### Limit request
 
 allows to limit the number of requests for a defined zone. 
 
 ```yaml
 limit_req_zone $variable zone=name:max_memory_size rate=rate;
+```
+
+the parameters are identical to limit connection except for the trailling rate, expressd in requests per second or per minute r/s, r/60s.
+
+```yaml
+limit_req zone=name burst=burst [nodelay];
+```
+
+burst parameters defines maximun possible brsts of requests.
+
+### Auth Request
+
+auth_requests allows to deny acccess to a resource based on the result of a sub-request. Nginx calls the URI to specify via auth_request directive. If sub request returns a 2xx response code access is allowed.
+
+```yaml
+location /downloads/ {
+  # if the script below returns a 200 status code
+  # the download is authorized
+  auth_request /autorization.php
+}
+```
+
+the auth_request_set allows to set a variable after the sub-request is executed. 
+
+------------
+
+## Content and encoding 
+
+Provides functionalities having an effect of the contents served to the client.
+
+### Empty GIF
+
+Serves a 1x1 transparent GIF image from the memory.
+
+```yaml
+location = /empty.gif {
+  empty_gif;
+}
+```
+### MP4
+
+Enable useful funtionality when serving a MP4 file. It parses a special argument ```start``` which indicates the offset of the section that the client wishes to download or pseudo-stream. The uri to access the file is video.mp4?start=XXX. 
+
+To utilize this feautre insert the ```mp4 directive``` in the location of your choice.
+
+```yaml
+location ~* /.mp4 {
+  mp4;
+}
+```
+
+### Addition
+
+Allows to add content before or after the body of the HTTP response.
+
+- add_before_body file_uri;
+- add_adter_body file_uri;
+
+### Substitution
+
+Allows to search and replace text directly from the response body. ```sub_filter searched_Text replacement_text;```.
+
+### Gzip filter
+
+Allows to compress the response body with gzip before sending to the client.
+
+```yaml
+gzip_buffers amount size;
+gzip_comp_level 1;
+gzip_disable;
+gzip_http_version 1.1;
+gzip_min_length 0;
+gzip_proxied off;
+gzip_types mime_type1 [mime_type2..];
+gzip_vary off;
+gzip_window MAX_WBITS;
+gzip_hash MAX_MEM_LEVEL;
+postpone_gzipping 0; # minimum data threshold to be reached before comp
+gzip_no_buffer off;
+```
+
+### Image filter
+
+provides image processing functionalities through the GD Graphics Library (gdlib). Works on location block that filter image files only, such as 
+
+```yaml
+location ~* \.(png|jpg|gif)$ {...}.
+```
+
+- image_filter
+  - test, size, resize width height, crop width height, rotate.
+  - image_filter resize 200 100;
+- image_filter_buffed
+- image_filter_jpeg_quality
+- image_filter_transaprency
+- image_filter_sharpen
+- image_filter_interlace
+  
+-----------
+
+## About visitors
+
+Provides extra functionality that heps you find oyt more information about the visitors by parsing client requets headers for browser name and version.
+
+### Browser 
+
+The browser module parses user-agent HTTP header of the client request in order to establish values for the variables that can be emplyed later in the config
+
+- $modern_browser: if client browser is identified as being a modern web browser/
+- $ancient_browser 
+- $msie: is set to 1 if client is using Internet Explorer
+
+```yaml
+modern_browser opera 10.0;
+```
+
+### Map
+
+Map allows to create values depending on a variable
+
+```
+map $uri $variable {
+  /page.html 0;
+  /contact.html 1;
+  /index.html 2;
+  default 0;
+}
+rewrite ^ /index.php?page=$variable
+```
+
+can only be inserted within the ```http``` block. The last instruction rewrites the URL accordnly. 
+
+### Geo
+
+Provide functionality that affects a variable based on the client data. The syntax is slightly different in that you are allowed to specify IPv4 and IPv6 address ranges.
+
+```yaml
+geo $variable {
+  default unknown;
+  127.0.0.1 local;
+  123.12.3.0/24 uk;
+  92.43.0.0/16 fr;
+}
+```
+
+directives
+- delete
+- default
+- include
+- proxy: defines a subnet of trusted addresses
+- proxy_recursive
+- ranges ```127.0.0.1-127.0.0.255 LOCAL```
+
+### GeoIP
+
+Similar to Geo. Provides accurate graphic similarities with the previous one. uses MaxMind GeoIP binary databases.DOwnload the databases files from the MaxMind website and place them in Nginx directory.
+
+```yaml
+geoip_country country.dat; # country information db
+geoip_city city.dat; # city informatino db
+geoip_org geoiporg.dat; # ISP/organization db
+```
+
+- $geoip_country_code (two letters c code)
+- $geoip_country_name 
+- $geoip_region, $geoip_city, $geoip_postal_code, $geoip_city_continet_code, $geoip_latitude, $geoip_region_name, $geoip_org.
+
+## USerID filter
+
+Assigns an identifier to the clients by issuing cookies. The identifier cab ne accessed from thevariables $uid_got and $uid_set 
+
+- userid: enables or disables issuing and logging of cookies.
+  - default off.
+  - on, v1, log, off
+- userid_service: definfes the IP address of the server issuing the cookie 
+  - userid_service ip;
+  - default: IP of the server 
+- userid_name: name assigned to the cookie 
+  - userid_name name;
+  - default: user identifier
+- userid_domain: domain assigned to the cookie 
+  - default: none
+  - ```userid_domain domain;```
+- userid_path
+  - default /
+- userid_expires
+  - default: no expiration date
+  - ```userid_expires date | max;```
+- userid_p3p
+
+### Split Clients
+
+resource-efficient way to split the visitor base into subgroups based on the percentages that specified. Nginx hashes a value privded (visitor IP, address, cookie data, query arguments, etc) and decides a group.
+
+```yaml
+split_clients "$remote_addr" $variable {
+  50% "group1";
+  50% "group2";
+}
+location ~ /.php$ {
+  set $args "${query_string}&group=${variable}";
+}
+```
+
+-------------
+
+## SSL and Security
+
+Secure HTTP functionalities through the SSL module, but also offers an extra module called Secure Link to protect the website and visitors.
+
+### SSL
+
+Works on http and server contexts.
+
+#### ssl
+
+- Ena HTTPS for the specified server
+- Equivalent to listen 443 or listen port ssl 
+- default ```ssl off```
+
+#### other directives
+
+- ```ssl_certificate file_path #PEM certificate```
+- ```ssl_certificate_key file_path``` 
+- ```ssl_client_certificate file_path```
+- ```ssl_crl``` orders nginx to load Certificate Revocation List file
+- ```ssl_dhparam file_path```
+- ```ssl_protocols [SSLv2] [SSLv3] [TLSv1] [TLSv1.1] [TLSv1.2];```
+- ```ssl_ciphers``` default ALL
+- ssl_prefer_Server_ciphers
+- ssl_verify_client
+- ssl_verify_depth
+- ssl_session_cache
+- ssl_session_timeout
+- ssl_password_phrase
+- ssl_buffer_size
+- ssl_session_tickets
+- ssl_session_ticket_key
+- ssl_trusted_certificate
+
+#### Variables
+
+- $ssl_cipher
+- $ssl_client_serial
+- $ssl_client_s_dn
+- $ssl_protocol
+- $ssl_client_cert
+- $ssl_client_verify: set to success if client cert was successfully verified
+- $ssl_session_id
+
+### Setting up SSL certificate
+
+Ensure to already have the following elements
+
+- A .key file generated with the following command: ```openssl genrsa -out secure.website.comkey 1024```
+- a .csr file generated with the following commmand ```openssl req -new -key secure.website.com.key -out secure.website.com.csr
+- Website certificate file as issued by Certificate Authority as secure.website.com.crt.
+- CA certificate (for example gd_bundle.crt purchased from goDaddy)
+
+1. Merge website certificate and CA certificate
+
+```sh
+cat seucre.website.com.crt gd_bundle.crt > combined.crt
+```
+
+```yaml
+server {
+  listen 443;
+  server_name secure.website.com;
+  ssl_certificate /path/to/combined.crt;
+  ssl_certificate_key /path/to/secure.website.com.key;
+}
+```
+
+### SSL Stapling
+
+SSL Stapling, also called OCSP (Online certificate Status Protocol Stapling), is a technique that allows clients to easily connect and resume sessions to an SSL/TLS server without having to contact the Certificate Authority, thus reducing the SSL negotiation time. 
+
+Enabling SSL stapling should thus speed up the communication between server and visitors.
+
+```yaml
+ssl_stapling on;
+ssl_stapling_verify on;
+ssl_trusted_certificate filename; (extension sohuld be .pem)
+```
+
+```yaml
+#optional directives
+ssl_stapling_file 
+ssl_stapling_responder
 ```
