@@ -116,4 +116,50 @@ when a variable that has not yet been initalized nginx will issue log messages i
 
 if set to on, nginx will issue log messags for every operation performed by the rewrite engine at the notice error level. 
 
-### Common rewrite rules 
+--------
+
+## Common rewrite rules 
+
+Basic rewrite rules to stisfy basics of dynamic websites that wish to beautify page links. http://website.com/ was omitted at the beggining of URIs.
+
+#### Search
+
+- input: /search/some-search-keywords
+- rewritten: /search.php?q=some-search-keywords
+- ```rewrite ^/search/(.*)$ /search.php?q=$1?;```
+
+#### Multiple Parameters
+
+- Input: /index.php/param1/param2/param3
+- Rewritten: /index.php?p1=param1&p2=param2&p3=param3
+- ```rewrite ^/index.php/(*.)/(*.)/(*.)$ /index.php?p1=$1&p2=$2&p3=$3
+
+#### Wiki-like
+
+- /wiki/some_keyword
+- /wiki/index.php?title=some_keyword
+- rewrite ^/wiki/(*.)$  /wiki/index.php?title=$1?;
+  
+#### News Website Article
+
+- /33526/us-economy
+- /article.php?id=33526
+- rewrite ^/([0-9]+)/.*$  /article.php?id=$1;
+
+-------
+
+## SSI Module
+
+SSI (Server Side Includes) is a sort of server-side programming language interpreted by Nginx. Created in order to render web pages dynamically, from static .html files with client-side scripts to complex pages with server-processes indstrucitons.
+
+### Module Directives
+
+- ssi: Enables parsing files for SSI commands. Nginx only parses the files corresonding to the MIME types selected with the ssi_types directive. Syntax on/off, default off; ```ssi on;```
+- ssi_types: Define MIME types that should be eligible for SSI parsing. ```ssi_types type1 [type2] [type3]``` default text/html;
+- ssi_client_errors: Enabling this option to silence Nginx error ssi messages.
+- ssi_value_length: Maximun length accepted by Nginx in characters
+- ssi_ignore_recycled_buffers
+- ssi_min_file_chunk
+- ssi_last_modified
+  
+  ### 
