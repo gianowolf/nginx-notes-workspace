@@ -86,3 +86,46 @@ To deal with dynamic IP addresses, instead of client's IP address, separate the 
 --------------------
 
 ## Nginx as TCP Load Balancer
+
+- Distribute load across any form networked servers (database servers, e-mail servers, web server, etc)
+
+## Stream Module
+
+The TCP load balancing works similar to HTTP load balancing. The module is not include in default build.
+
+OFfers a new block called stream which must be placed the the root of the configuration file. (outside of the http block).
+
+```yaml
+--with-stream
+```
+
+### directives
+
+- server: declares a TCP server listening on a particular port and optionally a network interface, with or without SSL.
+- upstream: defines a server group in a similar manner, as seen previously.
+
+### Example of MySQL Load Balancing
+
+Nginx configured to receive MySQL connections and balance them across two backend servers, as follows:
+
+```yaml
+stream {
+    upstream MyGroup { 
+        # IP Address Distribution
+        hash $remote_addr;
+        server 10.0.0.201 weight=2;
+        server 10.0.0.202;
+        server 10.0.0.203 backup; # back up only
+    }
+    server {
+        # listen on the default MySQL port 
+        listen 3306;
+        proxy_pass MyGroup;
+    }
+}
+```
+
+Additional documentation nginx.org
+
+
+
