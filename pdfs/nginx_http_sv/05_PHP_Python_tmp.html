@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>05_PHP_Python.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="php-and-python-with-nginx">PHP and Python with Nginx</h1>
+<h2 id="fastcgi">FastCGI</h2>
+<h3 id="cgi-mechanism">CGI Mechanism</h3>
+<p>The original purponse of a web server was merely to resond to requets from clients by serving te files located on a storage device.</p>
+<ol>
+<li>Client sends request: <code>GET /index.html HTTP/1.1</code> to the web server</li>
+<li>Web Server process request and sends resopnse <code>HTTP/1.0 OK or 404 file not found</code></li>
+</ol>
+<p>Static websites are being progressively abandoned atthe exprense of dynamic ones that contains scripts which are processed by applications such as PHP and Python among others.</p>
+<ol>
+<li>Client entity (typically web browser) sends request: <code>GET /index.php HTTP/1.1</code></li>
+<li>Web server pre-processes the reequest (URL rewriting, internal redirects)</li>
+<li>Web server (Nginx, Apache) forwards request using CGI</li>
+<li>Backend application (Application, Python, NodeJS) processes request</li>
+<li>Backed application returns response using CGI</li>
+<li>Web server post-processes response (gzip compression, character encoding, etc)</li>
+<li>Web server returns response <code>HTTP/1.0 200 OK</code></li>
+</ol>
+<p>When client attmps to visit a dynamic page, web server forwards to the application, processes the script and returns the response to the web server.</p>
+<p>To communicate with that ap, CGI protocol was invented in the early 1990s.</p>
+<h2 id="common-gateway-interface">Common Gateway Interface</h2>
+<ul>
+<li>CGI Protocol v1.1 [ RFC3875 ]</li>
+<li>Allows an HTTP server and a CGI script to share responsibility for resonding a cilent requests</li>
+<li>Server: responsible for managing conection, data transfer, transport, network issues</li>
+<li>CGI script: handles the app issues, data access and document processing</li>
+<li>CGI protocol describes the data exchange between web server and gateway application.</li>
+</ul>
+<h2 id="fast-common-gateway-interface">Fast Common Gateway Interface</h2>
+<p>CGI Protocol is inneficient for servers that are subjects to heavy loads.</p>
+<ul>
+<li>PErsistent processes that handle multiple requests</li>
+<li>server and gateway coomunicates using sockets as TCP or POSIX IPC -&gt; Web Server and application can located in different computers</li>
+<li>It can be implemented on any platform with any programming language.</li>
+<li>Not complex to implement.</li>
+</ul>
+<p>Once you have the web server and the backend app running, the only difficulty was remains is to establish the conection between.</p>
+<ol>
+<li>configure nginx perspective to communicate with the FastCGI application via FastCGI module.</li>
+</ol>
+<h3 id="nginx-cgi-derived-module-implementations">Nginx CGI-derived Module Implementations</h3>
+<ul>
+<li>uWSGI module allows Nginx to communicate with applciations through the uwsgi protocol.</li>
+<li>SCGI, variant of CGI like FastCGI. SCGI interfaces and modules can be found in a variety of software projects such as Apache, IISm Java, Cherokee, etc.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>FastCGI module</th>
+<th>uWSGFI equivalent</th>
+<th>SCGI equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fastcgi_pass</code></td>
+<td><code>uwsgi_pass</code></td>
+<td><code>scgi_pass</code></td>
+</tr>
+<tr>
+<td><code>fastcgi_cache</code></td>
+<td>uswsgi_cache</td>
+<td>scgi_cachje</td>
+</tr>
+<tr>
+<td>fastcgi_temp_path</td>
+<td>uwsgi_temp_path</td>
+<td>scgi_temp_path</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fastcgi-main-directives">FastCGI Main Directives</h3>
+<h4 id="fastcgipass">fastcgi_pass</h4>
+<ul>
+<li>location, if</li>
+<li>for TCP: <code>fastcgi_pass hostname:port</code></li>
+<li>for Unix: <code>fastcgi_pass unix:/path/to/fastcgi.socket;</code></li>
+<li>to refer upstream blocks: <code>fast_pass myblock</code></li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-comment"># examples</span>
+<span class="hljs-string">fastcgi_pass</span> <span class="hljs-string">localhost:9000;</span>
+<span class="hljs-string">fastcgi_pass</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:9000;</span>
+<span class="hljs-string">fastcgi_pass</span> <span class="hljs-string">unix:/tmp/fastcgi.socket;</span>
+<span class="hljs-comment"># Using an upstream block</span>
+<span class="hljs-string">upstream</span> <span class="hljs-string">fastcgi</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">server</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:9000;</span>
+    <span class="hljs-string">server</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:9001;</span>
+<span class="hljs-string">}</span>
+<span class="hljs-string">location</span> <span class="hljs-string">~*</span> <span class="hljs-string">\.php$</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">fastcgi_pass</span> <span class="hljs-string">fastcgi;</span>
+<span class="hljs-string">}</span>
+</div></code></pre>
+<h4 id="fastcgiparam">fastcgi_param</h4>
+<p>Allow to config the request passed to FastCGI</p>
+<ul>
+<li>http, server, location</li>
+<li>SCRIPT_FILENAME and QUERY_STRING are required</li>
+<li>for POST requests REQUEST_METHOD, CONTENT_TYPE, CONTENT_LENGTH are required.</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-string">fastcgi_param</span> <span class="hljs-string">SCRIPT_FILENAME</span> <span class="hljs-string">/home/website.com/www$fastcgi_script_name;</span>
+<span class="hljs-string">fastcgi_param</span> <span class="hljs-string">QUERY_STRING</span> <span class="hljs-string">$query_string;</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-string">fastcgi_param</span> <span class="hljs-string">REQUEST_METHOD</span> <span class="hljs-string">$request_method;</span>
+<span class="hljs-string">fastcgi_param</span> <span class="hljs-string">CONTENT_TYPE</span> <span class="hljs-string">$content_type;</span>
+<span class="hljs-string">fastcgi_param</span> <span class="hljs-string">CONTENT_LENGTH</span> <span class="hljs-string">$content_length;</span>
+</div></code></pre>
+<p>the fastcgi_params file in Nginx config folder already includes all necessarsy parameter definitios you need.</p>
+<p>If the parameter begins with HTTP_ it will override the potentially existing HTTP headers of the client request</p>
+<h4 id="fastcgibind">fastcgi_bind</h4>
+<ul>
+<li>http, server, location</li>
+<li>blinkds the socket to a local ip address, allowing to specify the network interface to use for FastCGI communications</li>
+<li>
+<pre class="hljs"><code><div>
+</div></code></pre>
+</li>
+</ul>
+<h4 id="fastcgipassheader">fastcgi_pass_header</h4>
+<ul>
+<li>specify additional headers that should be passed to the FastCGI server</li>
+</ul>
+<h4 id="fastcgihideheader">fastcgi_hide_header</h4>
+<p>headers that should be hidden from the FastCGI server )Nginx does not forward)</p>
+<h4 id="fastcgiindex">fastcgi_index</h4>
+<p>FastCGI server does not support automatic directory indexes. IF the requestd URI ends with a /, nginx appends the value fastcgi_index</p>
+<ul>
+<li>fastcgi_index filename;</li>
+<li>fastcgi_index index.php;</li>
+</ul>
+<h4 id="others-fastcgi-directives">Others fastcgi_* directives</h4>
+<ul>
+<li>ignore_client_abort</li>
+<li>intercepts_errors</li>
+<li>read_timeout</li>
+<li>connect_timeout</li>
+<li>send_timeout</li>
+<li>split_path_info</li>
+<li>store</li>
+<li>store_access</li>
+<li>temp_path</li>
+<li>max_temp_file_size</li>
+<li>temp_file_write_size</li>
+<li>send_lowat</li>
+<li>pass_request_body</li>
+<li>ignore_headers</li>
+<li>next_upstream</li>
+<li>next_upstream_timeout</li>
+<li>next_upstream_tries</li>
+<li>catch_stderr</li>
+<li>keep_conn</li>
+<li>force_ranges</li>
+<li>limit_rate</li>
+</ul>
+<h4 id="others-caching-and-buffering">Others caching and buffering</h4>
+<ul>
+<li>cache</li>
+<li>cache_key</li>
+<li>cache_methos</li>
+<li>cache_min_uses</li>
+<li>cache_path</li>
+<li>cache_use_stale</li>
+<li>cache_valid</li>
+<li>no_cache</li>
+<li>cache_bypass</li>
+<li>cache_revalidate</li>
+<li>bvuffering</li>
+<li>buffers</li>
+</ul>
+<p>Config example</p>
+<pre class="hljs"><code><div>fast_cacye phpcache;
+fastcgi_cache_key &quot;$scheme$host$request_uri&quot;; # request_uri includes the request arguments such as /page.php?arg=value
+fastcgi_cache_min_uses 2; # after 2 hits, a request receives a cached response
+fastcgi_cache_path /tmp/cache levels=1:2 keys_zone=phpcache:10m inactive=30m max_size=500M
+fastcgi_cache_use_stale updating timeout;
+fastcgi_cache_valid 404 1m;
+fascgi_cache_valid 500 502 504 5m;
+</div></code></pre>
+<p>These directives are valid for pretty much any virtual host configuration. May to save thewse in a separate file <code>fastcgi_cache</code> that you can include at the appropiate place</p>
+<pre class="hljs"><code><div><span class="hljs-string">server</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">server_name</span> <span class="hljs-string">website.com;</span>
+    <span class="hljs-string">location</span> <span class="hljs-string">~*</span> <span class="hljs-string">/.php$</span> <span class="hljs-string">{</span>
+        <span class="hljs-string">fastcgi_pass</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:9000;</span>
+        <span class="hljs-string">fastcgi_param</span> <span class="hljs-string">SCRIPT_FILENAME</span> <span class="hljs-string">/home/website.com/www$fastcgi_script_name;</span>
+        <span class="hljs-string">fastcgi_param</span> <span class="hljs-string">PATH_INFO</span> <span class="hljs-string">$fastcgi_script_name;</span>
+        <span class="hljs-string">include</span> <span class="hljs-string">fastcgi_params;</span>
+        <span class="hljs-string">include</span> <span class="hljs-string">fastcgi_cache;</span>
+    <span class="hljs-string">}</span>
+<span class="hljs-string">}</span>
+</div></code></pre>
+<h2 id="php-with-nginx">PHP With Nginx</h2>
+<p>PHP 5+ came with FastCGI process manager. PHP should be confiured with --enable-fpm argument.</p>
+<h3 id="architecture">Architecture</h3>
+<p>PHP supports the FastCGI protocol. The PHP binary processes scvripts and is stable to interact with nginx via sockets. The FastCGI Process Manager is kown as PHP-FPM</p>
+<h3 id="php-fpm">PHP-FPM</h3>
+<ul>
+<li>Script tha tmanages the PHP processes.</li>
+<li>It awaits and receives instructions from Nginx</li>
+<li>Automatically daemonizing PHP</li>
+<li>Execute scripts in chrooted environment</li>
+<li>Improved logging</li>
+<li>IP address restrictions</li>
+</ul>
+<h3 id="nginx-configuration">Nginx Configuration</h3>
+<pre class="hljs"><code><div><span class="hljs-string">server</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">server_name</span> <span class="hljs-string">.website.com;</span>
+    <span class="hljs-string">listen</span> <span class="hljs-number">80</span><span class="hljs-string">;</span>
+    <span class="hljs-string">root</span> <span class="hljs-string">/home/website/www;</span>
+    <span class="hljs-string">index</span> <span class="hljs-string">index.php;</span>
+    <span class="hljs-string">location</span> <span class="hljs-string">~*</span> <span class="hljs-string">/.php$</span> <span class="hljs-string">{</span> <span class="hljs-comment"># for requests ending with .php</span>
+        <span class="hljs-comment"># Specify the listening address and port configured in php</span>
+        <span class="hljs-string">fastcgi_pass</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:9000;</span>
+        <span class="hljs-comment"># the document path to be passesd to PHP-FPM</span>
+        <span class="hljs-string">fastcgi_param</span> <span class="hljs-string">SCRIPT_FILENAME</span> <span class="hljs-string">$document_root$fastcgi_script_name;</span>
+        <span class="hljs-comment"># the script filename to be passed to PHP-FPM</span>
+        <span class="hljs-string">fastcgi_param</span> <span class="hljs-string">PATH_INFO</span> <span class="hljs-string">$fastcgi_script_name;</span>
+        <span class="hljs-comment"># include other FastCGI realted configuration settings</span>
+        <span class="hljs-string">include</span> <span class="hljs-string">fastcgi_params;</span>
+    <span class="hljs-string">}</span>
+<span class="hljs-string">}</span>
+</div></code></pre>
+<pre class="hljs"><code><div>/usr/<span class="hljs-built_in">local</span>/nginx/sbin/nginx -s reload
+or
+service nginx reload
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-built_in">echo</span> <span class="hljs-string">"&lt;?php phpinfo(); ?&gt;"</span> &gt; /home/website/www/index.php
+</div></code></pre>
+<p>load http://localhost/ or website URL.</p>
+
+</body>
+</html>
